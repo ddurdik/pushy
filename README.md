@@ -24,7 +24,6 @@ You will need to install the following dependencies:
 
 * requests
 * six
-* pypandoc
 
 This can be done either manually or via pip with the included `requirements.txt` file as follows:
 

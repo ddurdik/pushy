@@ -1,4 +1,4 @@
-import os,sys,pypandoc
+import os,sys
 from setuptools import setup, find_packages
 from setuptools.command.test import test as TestCommand
 
@@ -19,17 +19,13 @@ def read(fname):
     return open(os.path.join(os.path.dirname(__file__), fname)).read()
 
 def makeLongDescription():
-    return pypandoc.convert_file('README.md', 'rst')
-
-try: long_description=makeLongDescription()
-except OSError:
-    from pypandoc.pandoc_download import download_pandoc
-    download_pandoc()
-    long_description=makeLongDescription()
+    this_directory = os.path.abspath(os.path.dirname(__file__))
+    with open(os.path.join(this_directory, 'README.md'), encoding='utf-8') as f:
+        return f.read()
 
 setup(
     name="PushySDK",
-    version="0.1.5",
+    version="0.1.6",
     author="Rob Kent",
     author_email="jazzycamel@googlemail.com",
     description="A very simple Python client for the Pushy notification service API.",
@@ -40,7 +36,8 @@ setup(
     install_requires=['requests','six'],
     tests_require=['pytest','pytest-cov'],
     cmdclass={'test': PyTest},
-    long_description=long_description,
+    long_description=makeLongDescription(),
+    long_description_content_type='text/markdown',
     classifiers=[
         "Development Status :: 4 - Beta",
         "Intended Audience :: Developers",
