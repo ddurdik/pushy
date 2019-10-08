@@ -1,4 +1,4 @@
-import os,sys
+import os,sys,pypandoc
 from setuptools import setup, find_packages
 from setuptools.command.test import test as TestCommand
 
@@ -18,17 +18,14 @@ class PyTest(TestCommand):
 def read(fname):
     return open(os.path.join(os.path.dirname(__file__), fname)).read()
 
-
 def makeLongDescription():
-    import pypandoc  # imported here to avoid import errors when running setup.py install before installing requirements
+    return pypandoc.convert_file('README.md', 'rst')
 
-    try:
-        return pypandoc.convert_file('README.md', 'rst')
-    except OSError:
-        from pypandoc.pandoc_download import download_pandoc
-        download_pandoc()
-        return pypandoc.convert_file('README.md', 'rst')    
-
+try: long_description=makeLongDescription()
+except OSError:
+    from pypandoc.pandoc_download import download_pandoc
+    download_pandoc()
+    long_description=makeLongDescription()
 
 setup(
     name="PushySDK",
@@ -40,10 +37,10 @@ setup(
     keywords="Pushy Notification API",
     url="https://github.com/jazzycamel/pushy",
     packages=find_packages(exclude=['docs','tests']),
-    install_requires=['requests','six','pypandoc'],
+    install_requires=['requests','six'],
     tests_require=['pytest','pytest-cov'],
     cmdclass={'test': PyTest},
-    long_description=makeLongDescription(),
+    long_description=long_description,
     classifiers=[
         "Development Status :: 4 - Beta",
         "Intended Audience :: Developers",
